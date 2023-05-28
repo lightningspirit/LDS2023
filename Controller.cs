@@ -36,7 +36,7 @@ namespace AnaliseImagens
             string command;
             do
             {
-               command = Console.ReadLine();
+              command = Console.ReadLine();
 
                 //conhunto de imagens para teste dos resultados
                 //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste.png";
