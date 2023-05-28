@@ -111,7 +111,6 @@ namespace AnaliseImagens
              {
                 //Quando os resultados estão prontos, é lançado o evento
                 //ColorPercentages results = executor(path);
-                Console.WriteLine(path);
 
                 ColorPercentages results = ExecuteAnalyzeCmd(path);
                 RaiseResultsAvailable(results);

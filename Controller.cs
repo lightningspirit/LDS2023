@@ -37,8 +37,14 @@ namespace AnaliseImagens
             do
             {
                command = Console.ReadLine();
-               //command = "C:\\Users\\luisn\\source\\repos\\LDS2023\\teste.png";
-                    LerComando(command);
+
+                //conhunto de imagens para teste dos resultados
+                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste.png";
+                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste_red.png";
+                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste_green.png";
+                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste_blue.png";
+                
+                LerComando(command);
 
             } while (!command.Equals("E"));
         }
