@@ -4,7 +4,6 @@ namespace AnaliseImagens
 {
     class View
     {
-
         /*
          * O evento OnInstructionsNeeded pode ser respondido por delegados do tipo InstructionsHandler, ou seja, pode ser 
          * respondido por qualquer método que tenha a mesma assignatura que o delegado definido. 
@@ -22,7 +21,6 @@ namespace AnaliseImagens
          */
         public void ApresentarInstrucoes()
         {
-
             List<string> availableCommands = new();
 
             OnInstructionsNeeded(ref availableCommands);
@@ -35,15 +33,6 @@ namespace AnaliseImagens
         }
 
         /*
-         * Imprime um prompt que solicita ao utilizador para inserir o comando. Esse prompt pode ser precedido de uma mensagem
-         * de erro.
-        */
-        public static void ImprimirPromptInserirInput(string msg)
-        {
-            Console.WriteLine(msg + "Introduza um comando. Para sair, pressione 'E':");
-        }
-
-        /*
         * Mensagem de erro quando a operação não foi executada com sucesso e término do programa com código 
         * ERROR_OPERATION_NOT_SUCCESSFUL
         */
@@ -51,16 +40,6 @@ namespace AnaliseImagens
         {
             Console.WriteLine(message);
             Environment.Exit(ExitCodes.ERROR_OPERATION_NOT_SUCCESSFUL);
-        }
-
-
-        /*
-         * Mensagem de despedida quando utilizador solicita término do programa e saída com código SUCCESS
-         */ 
-        public static void ImprimirMensagemDespedida()
-        {
-            Console.WriteLine("A terminar sessão, até breve!");
-            Environment.Exit(ExitCodes.SUCCESS);
         }
 
         /*
@@ -71,7 +50,7 @@ namespace AnaliseImagens
         {
             ColorPercentages results = e.Results;
             Console.WriteLine("Resultados:");
-            Console.WriteLine($"Red: { results.RedPercentage:F2}%");
+            Console.WriteLine($"Red: {results.RedPercentage:F2}%");
             Console.WriteLine($"Green: {results.GreenPercentage:F2}%");
             Console.WriteLine($"Blue: {results.BluePercentage:F2}%");
 

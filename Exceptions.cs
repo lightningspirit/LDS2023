@@ -15,6 +15,12 @@ namespace AnaliseImagens
         public CommandNotValid(string command) : base($"Comando {command} não é válido.") { }
     }
 
+    //Quando faltam argumentos ao comando
+    class EmptyCommandArguments : Exception
+    {
+        public EmptyCommandArguments() : base($"Nenhum argumento passado ao comando.") { }
+    }
+
     //Quando não existe nenhuma imagem no path indicado ou este não é válido
     class InvalidPath : Exception
     {
