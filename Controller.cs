@@ -1,8 +1,4 @@
-﻿using AnaliseImagens;
-using System.Data;
-using System.IO;
-
-namespace AnaliseImagens
+﻿namespace AnaliseImagens
 {
     class Controller
     {
@@ -11,7 +7,8 @@ namespace AnaliseImagens
         private readonly Model model; 
 
         //Construtor sem parâmetros
-        public Controller() {
+        public Controller()
+        {
             view = new View(); 
             model = new Model();
             
@@ -22,31 +19,19 @@ namespace AnaliseImagens
             model.OnResultsAvailable += view.ApresentarResultados;
         }
 
-
         /*
          * View imprime as instruções com os comandos disponíveis. 
          * View imprime um prompt a indicar ao utilizador para introduzir o comando.
          * Controller faz a leitura do input do utilizador e passa o comando para o método auxiliar interno à classe 'LerComando()'
         */
-        public void IniciarPrograma()
+        public void IniciarPrograma(string[] args)
         {
-      
-            view.ApresentarInstrucoes();
-            View.ImprimirPromptInserirInput("");
-            string command;
-            do
-            {
-              command = Console.ReadLine();
-
-                //conhunto de imagens para teste dos resultados
-                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste.png";
-                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste_red.png";
-                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste_green.png";
-                //command = "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\Imagens_teste\\teste_blue.png";
-                
-                LerComando(command);
-
-            } while (!command.Equals("E"));
+            if (args.Length > 0) {
+                // args[0] contem o comando e os outros argumentos são passados no segundo parâmetro
+                LerComando(args[0], args.Skip(1).ToArray());
+            } else {
+                view.ApresentarInstrucoes();
+            }
         }
 
         /*
@@ -55,61 +40,38 @@ namespace AnaliseImagens
          *   Podem ocorrer excepções que são geridas pelo método 'HandleException()' do Controller. Caso não ocorram excepções,
          *   a view apresenta os resultados. 
         */
-        private void LerComando(string command)
+        private void LerComando(string command, string[] args)
         {
-
-            if (command.Equals("E"))
-            {
-                View.ImprimirMensagemDespedida();
-                return;
-            }
-
             try
             {
-                
-
-                string path = command, cmd = "analyze";
-                //model.ValidarComando(command);//, ref cmd, ref path);
-
-                model.ExecutarComando(cmd, path);
+                // Valida o comando e os argumentos
+                model.ValidarComando(command, args);
+                // Executa comando passando os argumentos
+                model.ExecutarComando(command, args);
+                // Sai do programa com sucesso
+                Environment.Exit(ExitCodes.SUCCESS);
             }
             catch (Exception excp)
             {
                 HandleException(excp);
             }
-
         }
 
+        /*
+        * Faz a gestão de excepções que possam ser lançadas pelo modelo. 
+        * Para as excepções NoCommandFound, CommandNotValid ou InvalidPath:
+        *  - View imprime um prompt com uma mensagem de erro específica de cada excepção e solicita novamente ao utilizador para inserir o comando
+        *  - Controller faz a leitura do comando inserido
+        *  
+        * Para a excepção OperationError:
+        *  - View imprime mensagem de erro e execução do programa termina
+        */
 
-
-    /*
-     * Faz a gestão de excepções que possam ser lançadas pelo modelo. 
-     * Para as excepções NoCommandFound, CommandNotValid ou InvalidPath:
-     *  - View imprime um prompt com uma mensagem de erro específica de cada excepção e solicita novamente ao utilizador para inserir o comando
-     *  - Controller faz a leitura do comando inserido
-     *  
-     * Para a excepção OperationError:
-     *  - View imprime mensagem de erro e execução do programa termina
-     */
-
-    private void HandleException(Exception excp)
+        private static void HandleException(Exception excp)
         {
-            if (excp is CommandNotValid || excp is InvalidPath)
-            {
-                View.ImprimirPromptInserirInput(excp.Message + "\n");
-                string command = Console.ReadLine();
-                LerComando(command);
-            }
-            else if (excp is OperationError)
-            {
-                View.ImprimirMensagemErro(excp.Message);
-            }
-
-
+            View.ImprimirMensagemErro("Erro: " + excp.Message);
+            Environment.Exit(ExitCodes.ERROR_OPERATION_NOT_SUCCESSFUL);
         }
-
-
-     
     }
 }
 

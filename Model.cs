@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using static AnaliseImagens.Model;
-using AForge;
+﻿using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using System.Drawing;
 
 namespace AnaliseImagens
 {
-
     //Definição da classe ColorPercentages
     public class ColorPercentages
     {
@@ -22,8 +17,8 @@ namespace AnaliseImagens
     {
         //Atributos da classe
         private readonly List<string> listCmds;
-        public delegate void CommandValidator(string path);
-        public delegate ColorPercentages CommandExecutor(string path);
+        public delegate void CommandValidator(string[] args);
+        public delegate ColorPercentages CommandExecutor(string[] args);
         private readonly Dictionary<string, CommandValidator> commandValidators; 
         private readonly Dictionary<string, CommandExecutor> commandExecutors;
 
@@ -33,19 +28,16 @@ namespace AnaliseImagens
          * Quando o evento OnResultsAvailable é lançado, delegados que tenham subscrito a esse evento vão receber e terão acesso
          * aos resultados
          */
-        public delegate void AnalysisResultsHandler(object sender, AnalysisResultsEventArgs e);
-        public event AnalysisResultsHandler OnResultsAvailable;
-
-       
+        public delegate void AnalysisResultsHandler(object sender, ResultsEventArgs<ColorPercentages> e);
+        public event AnalysisResultsHandler? OnResultsAvailable;
 
         //Construtor
         public Model()
         {
-          
-            listCmds = new List<string> {"analisar..."};
+            listCmds = new List<string> { "analyze" };
 
             //Os dicionários são inicializados associando a cada comando uma função que irá validar ou executar o comando
-             commandValidators = new Dictionary<string, CommandValidator>
+            commandValidators = new Dictionary<string, CommandValidator>
             {
                 { "analyze", ValidateAnalyzeCmd }
             };
@@ -62,7 +54,7 @@ namespace AnaliseImagens
         */
         protected virtual void RaiseResultsAvailable(ColorPercentages results)
         {
-            OnResultsAvailable?.Invoke(this, new AnalysisResultsEventArgs(results));
+            OnResultsAvailable?.Invoke(this, new ResultsEventArgs<ColorPercentages>(results));
         }
 
 
@@ -75,26 +67,15 @@ namespace AnaliseImagens
         }
 
 
-        public void ValidarComando(string commandReceived)//, ref string cmd, ref string path)
+        public void ValidarComando(string command, string[] args)
         {
-
-
-            /*
-          * TO DO - O comando possui na verdade o comando em si e o path da imagem. É necessário um método que separe ambos, valide 
-          * e lance uma excepção consoante o tipo de erro, por exemplo:
-          *  - Se comando inválido lança a excepção CommandNotValid
-          *  - Se imagem inválid lança a excepção InvalidPath
-          *  - Se operação não foi executada com sucesso, lança a excepção OperationError
-          */
-
-               
-            if (commandValidators.TryGetValue(commandReceived, out CommandValidator validator))
+            if (commandValidators.TryGetValue(command, out CommandValidator? validator))
             {
-                validator(commandReceived);
+                validator(args);
             }
             else
             {
-                throw new CommandNotValid(commandReceived);
+                throw new CommandNotValid(command);
             }
         }
 
@@ -104,41 +85,42 @@ namespace AnaliseImagens
          * Se o comando não for executado com sucesso, é lançada uma excepção e o controlo retorna ao Controller que irá lidar com essa
          * excepção
          */
-        public void ExecutarComando(string cmd, string path)
+        public void ExecutarComando(string command, string[] args)
         {
-            
-            if (commandExecutors.TryGetValue(cmd, out var executor))
-             {
+            if (commandExecutors.TryGetValue(command, out CommandExecutor? executor))
+            {
                 //Quando os resultados estão prontos, é lançado o evento
-                //ColorPercentages results = executor(path);
-
-                ColorPercentages results = ExecuteAnalyzeCmd(path);
+                ColorPercentages results = executor(args);
                 RaiseResultsAvailable(results);
-             }
-             else
-             {
-                 throw new OperationError(cmd);
-             }
-            
+            }
+            else
+            {
+                throw new OperationError(command);
+            }
         }
 
-        private void ValidateAnalyzeCmd (string path)
+        private void ValidateAnalyzeCmd (string[] args)
         {
+            if (args.Length == 0) {
+                throw new EmptyCommandArguments();
+            }
 
+            if (!File.Exists(args[0])) {
+                throw new InvalidPath(args[0]);
+            }
         }
 
 
-        /* ---------------------------- TO DO -------------------------------------
+        /**
         * Função que calcula as percentagens de cada cor e retornar resultado como objecto do tipo ColorPercentages
         */
-        private ColorPercentages ExecuteAnalyzeCmd (string path)
+        private ColorPercentages ExecuteAnalyzeCmd(string[] args)
         {
-
-            Bitmap bitmap = new(path);
+            Bitmap bitmap = new(args[0]);
 
             float totalPixels = bitmap.Height * bitmap.Width;
 
-            Console.WriteLine("Imagem com "+totalPixels+ " Pixels");
+            // Console.WriteLine("Imagem com "+totalPixels+ " Pixels");
 
             // Cria um filtro de cores vermelhas
             ColorFiltering filterRed = new()
@@ -170,7 +152,6 @@ namespace AnaliseImagens
             // Aplica o filtro Blue na imagem
             Bitmap bitmapBlue = filterBlue.Apply((Bitmap)bitmap);
 
-
             // Aplica o filtro Green na imagem
             Bitmap bitmapGreen = filterGreen.Apply((Bitmap)bitmap);
 
@@ -185,10 +166,9 @@ namespace AnaliseImagens
             float greenPixels = bitmapGreenPixeis.PixelsCountWithoutBlack;
             float bluePixels = bitmapBluePixeis.PixelsCountWithoutBlack;
 
-            Console.WriteLine("Imagem com " + redPixels + " REDPixels");
-            Console.WriteLine("Imagem com " + greenPixels + " GREENPixels");
-            Console.WriteLine("Imagem com " + bluePixels + " BLUEPixels");
-
+            // Console.WriteLine("Imagem com " + redPixels + " REDPixels");
+            // Console.WriteLine("Imagem com " + greenPixels + " GREENPixels");
+            // Console.WriteLine("Imagem com " + bluePixels + " BLUEPixels");
 
             ColorPercentages results = new()
             {
@@ -199,9 +179,5 @@ namespace AnaliseImagens
 
             return results;
         }
-
-
-
-     }
-
+    }
 }

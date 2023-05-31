@@ -1,6 +1,5 @@
 ﻿namespace AnaliseImagens
 {
-
     //Definição de códigos customizados de término de programa 
     public static class ExitCodes
     {
@@ -10,13 +9,11 @@
 
     class AnaliseImagens
     {
- 
         //Iniciar o programa - ponto de entrada principal
         static void Main(string[] args)
         {
             Controller controller = new();
-            controller.IniciarPrograma();
-
+            controller.IniciarPrograma(args);
         }
     }
 }
