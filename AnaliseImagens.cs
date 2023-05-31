@@ -1,6 +1,5 @@
 ﻿namespace AnaliseImagens
 {
-
     //Definição de códigos customizados de término de programa 
     public static class ExitCodes
     {
