@@ -125,7 +125,7 @@ namespace AnaliseImagens
 
             float totalPixels = bitmap.Height * bitmap.Width;
 
-            Console.WriteLine("Imagem com "+totalPixels+ " Pixels");
+            // Console.WriteLine("Imagem com "+totalPixels+ " Pixels");
 
             // Cria um filtro de cores vermelhas
             ColorFiltering filterRed = new()
@@ -171,10 +171,9 @@ namespace AnaliseImagens
             float greenPixels = bitmapGreenPixeis.PixelsCountWithoutBlack;
             float bluePixels = bitmapBluePixeis.PixelsCountWithoutBlack;
 
-            Console.WriteLine("Imagem com " + redPixels + " REDPixels");
-            Console.WriteLine("Imagem com " + greenPixels + " GREENPixels");
-            Console.WriteLine("Imagem com " + bluePixels + " BLUEPixels");
-
+            // Console.WriteLine("Imagem com " + redPixels + " REDPixels");
+            // Console.WriteLine("Imagem com " + greenPixels + " GREENPixels");
+            // Console.WriteLine("Imagem com " + bluePixels + " BLUEPixels");
 
             ColorPercentages results = new()
             {
