@@ -1,9 +1,4 @@
-﻿using AnaliseImagens;
-using System.Data;
-using System.IO;
-using System.Linq;
-
-namespace AnaliseImagens
+﻿namespace AnaliseImagens
 {
     class Controller
     {
@@ -72,7 +67,7 @@ namespace AnaliseImagens
         *  - View imprime mensagem de erro e execução do programa termina
         */
 
-        private void HandleException(Exception excp)
+        private static void HandleException(Exception excp)
         {
             View.ImprimirMensagemErro("Erro: " + excp.Message);
             Environment.Exit(ExitCodes.ERROR_OPERATION_NOT_SUCCESSFUL);

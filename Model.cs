@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using static AnaliseImagens.Model;
-using AForge;
+﻿using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
 using System.Drawing;
 
 namespace AnaliseImagens
 {
-
     //Definição da classe ColorPercentages
     public class ColorPercentages
     {

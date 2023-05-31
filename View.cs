@@ -1,6 +1,4 @@
-﻿using AnaliseImagens;
-
-namespace AnaliseImagens
+﻿namespace AnaliseImagens
 {
     class View
     {
@@ -11,10 +9,7 @@ namespace AnaliseImagens
          * por referência que podem modificar
          */
         public delegate void InstructionsHandler(ref List<string> commands);
-        public event InstructionsHandler OnInstructionsNeeded;
-
-        //Construtor
-        public View() {}
+        public event InstructionsHandler? OnInstructionsNeeded;
 
         /*
          *  Quando este método é chamado, lança um evento OnInstructionsNeeded
@@ -23,7 +18,10 @@ namespace AnaliseImagens
         {
             List<string> availableCommands = new();
 
-            OnInstructionsNeeded(ref availableCommands);
+            if (OnInstructionsNeeded is not null)
+            {
+                OnInstructionsNeeded(ref availableCommands);
+            }
 
             Console.WriteLine("Comandos disponíveis:");
             foreach (string command in availableCommands)
