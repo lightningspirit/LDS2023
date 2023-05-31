@@ -45,7 +45,7 @@ namespace AnaliseImagens
          * Este método subscreve a um evento que é lançado quando os resultados estão prontos. Quando isso ocorre, 
          * recebe os resultados como argumento e imprime-os
          */
-        public void ApresentarResultados (object sender, AnalysisResultsEventArgs e)
+        public void ApresentarResultados (object sender, ResultsEventArgs<ColorPercentages> e)
         {
             ColorPercentages results = e.Results;
 

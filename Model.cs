@@ -33,8 +33,8 @@ namespace AnaliseImagens
          * Quando o evento OnResultsAvailable é lançado, delegados que tenham subscrito a esse evento vão receber e terão acesso
          * aos resultados
          */
-        public delegate void AnalysisResultsHandler(object sender, AnalysisResultsEventArgs e);
-        public event AnalysisResultsHandler OnResultsAvailable;
+        public delegate void AnalysisResultsHandler(object sender, ResultsEventArgs<ColorPercentages> e);
+        public event AnalysisResultsHandler? OnResultsAvailable;
 
         //Construtor
         public Model()
@@ -59,7 +59,7 @@ namespace AnaliseImagens
         */
         protected virtual void RaiseResultsAvailable(ColorPercentages results)
         {
-            OnResultsAvailable?.Invoke(this, new AnalysisResultsEventArgs(results));
+            OnResultsAvailable?.Invoke(this, new ResultsEventArgs<ColorPercentages>(results));
         }
 
 
@@ -74,7 +74,7 @@ namespace AnaliseImagens
 
         public void ValidarComando(string command, string[] args)
         {
-            if (commandValidators.TryGetValue(command, out CommandValidator validator))
+            if (commandValidators.TryGetValue(command, out CommandValidator? validator))
             {
                 validator(args);
             }
@@ -92,7 +92,7 @@ namespace AnaliseImagens
          */
         public void ExecutarComando(string command, string[] args)
         {
-            if (commandExecutors.TryGetValue(command, out CommandExecutor executor))
+            if (commandExecutors.TryGetValue(command, out CommandExecutor? executor))
             {
                 //Quando os resultados estão prontos, é lançado o evento
                 ColorPercentages results = executor(args);
