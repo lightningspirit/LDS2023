@@ -102,7 +102,6 @@ namespace AnaliseImagens
             {
                 throw new OperationError(command);
             }
-            
         }
 
         private void ValidateAnalyzeCmd (string[] args)
@@ -157,7 +156,6 @@ namespace AnaliseImagens
 
             // Aplica o filtro Blue na imagem
             Bitmap bitmapBlue = filterBlue.Apply((Bitmap)bitmap);
-
 
             // Aplica o filtro Green na imagem
             Bitmap bitmapGreen = filterGreen.Apply((Bitmap)bitmap);

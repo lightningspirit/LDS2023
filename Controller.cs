@@ -53,6 +53,8 @@ namespace AnaliseImagens
                 model.ValidarComando(command, args);
                 // Executa comando passando os argumentos
                 model.ExecutarComando(command, args);
+                // Sai do programa com sucesso
+                Environment.Exit(ExitCodes.SUCCESS);
             }
             catch (Exception excp)
             {
@@ -73,6 +75,7 @@ namespace AnaliseImagens
         private void HandleException(Exception excp)
         {
             View.ImprimirMensagemErro("Erro: " + excp.Message);
+            Environment.Exit(ExitCodes.ERROR_OPERATION_NOT_SUCCESSFUL);
         }
     }
 }

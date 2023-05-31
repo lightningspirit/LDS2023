@@ -39,7 +39,6 @@ namespace AnaliseImagens
         public static void ImprimirMensagemErro(string message)
         {
             Console.WriteLine(message);
-            Environment.Exit(ExitCodes.ERROR_OPERATION_NOT_SUCCESSFUL);
         }
 
         /*
@@ -49,12 +48,11 @@ namespace AnaliseImagens
         public void ApresentarResultados (object sender, AnalysisResultsEventArgs e)
         {
             ColorPercentages results = e.Results;
+
             Console.WriteLine("Resultados:");
             Console.WriteLine($"Red: {results.RedPercentage:F2}%");
             Console.WriteLine($"Green: {results.GreenPercentage:F2}%");
             Console.WriteLine($"Blue: {results.BluePercentage:F2}%");
-
-            Environment.Exit(ExitCodes.SUCCESS);
         }
     }
 }
