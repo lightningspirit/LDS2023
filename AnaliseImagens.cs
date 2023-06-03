@@ -12,7 +12,12 @@
         //Iniciar o programa - ponto de entrada principal
         static void Main(string[] args)
         {
-            Controller controller = new();
+            // Injecção de dependências Model e View concretas
+            Controller controller = new(
+                new Model(),
+                new View()
+            );
+
             controller.IniciarPrograma(args);
         }
     }
