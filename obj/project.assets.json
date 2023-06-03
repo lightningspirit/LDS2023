@@ -208,11 +208,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\AnaliseImagens.csproj",
+      "projectUniqueName": "C:\\Users\\luisn\\source\\repos\\LDS2023\\AnaliseImagens.csproj",
       "projectName": "AnaliseImagens",
-      "projectPath": "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\AnaliseImagens.csproj",
+      "projectPath": "C:\\Users\\luisn\\source\\repos\\LDS2023\\AnaliseImagens.csproj",
       "packagesPath": "C:\\Users\\luisn\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\obj\\",
+      "outputPath": "C:\\Users\\luisn\\source\\repos\\LDS2023\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\luisn\\AppData\\Roaming\\NuGet\\NuGet.Config",

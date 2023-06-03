@@ -125,7 +125,7 @@ namespace AnaliseImagens
             // Cria um filtro de cores vermelhas
             ColorFiltering filterRed = new()
             {
-                Red = new IntRange(150, 255),
+                Red = new IntRange(100, 255),
                 Green = new IntRange(0, 100),
                 Blue = new IntRange(0, 100)
             };
@@ -133,17 +133,17 @@ namespace AnaliseImagens
             // Cria um filtro de cores verdes
             ColorFiltering filterGreen = new()
             {
-                Red = new IntRange(0, 80),
-                Green = new IntRange(100, 200),
+                Red = new IntRange(0, 100),
+                Green = new IntRange(100, 255),
                 Blue = new IntRange(0, 100)
             };
 
             // Cria um filtro de cores azuis
             ColorFiltering filterBlue = new()
             {
-                Red = new IntRange(0, 80),
-                Green = new IntRange(0, 150),
-                Blue = new IntRange(150, 255)
+                Red = new IntRange(0, 100),
+                Green = new IntRange(0, 100),
+                Blue = new IntRange(100, 255)
             };
 
             // Aplica o filtro Red na imagem

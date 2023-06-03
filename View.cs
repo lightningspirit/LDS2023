@@ -26,7 +26,7 @@
             Console.WriteLine("Comandos disponíveis:");
             foreach (string command in availableCommands)
             {
-                Console.WriteLine($"- {command}");
+                Console.WriteLine($"- {command} \n Volte a tentar com o comando indicado seguido do endereço da imagem.");
             }
         }
 

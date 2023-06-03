@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0mZFtRT1AR6xR5vvby8jknH/PaQJQJndHfId3oDaTc3pxAXyDtMH5DwT7NWAmow8ctdsvyDC9dLMOQKo0y7Dhw==",
+  "dgSpecHash": "tV4UUgA97kG2QxMQR7QFZUzZ4VdfTW8Fmw+s8RqD0z8HyPoEiz+3S/s30ZldzjRsM2WJhvFjA3dPo5GAj8OIjA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\luisn\\source\\repos\\lsantos1970\\LDS2023_C1\\AnaliseImagens.csproj",
+  "projectFilePath": "C:\\Users\\luisn\\source\\repos\\LDS2023\\AnaliseImagens.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\luisn\\.nuget\\packages\\aforge\\2.2.5\\aforge.2.2.5.nupkg.sha512",
     "C:\\Users\\luisn\\.nuget\\packages\\aforge.imaging\\2.2.5\\aforge.imaging.2.2.5.nupkg.sha512",
