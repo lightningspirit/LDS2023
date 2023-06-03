@@ -2,12 +2,14 @@
 {
     class Controller
     {
-        //Atributos da classe 
-        private readonly View view;
-        private readonly Model model; 
+        // Dependências da classe
+        private readonly IView view;
+        private readonly IModel model;
 
-        //Construtor sem parâmetros
-        public Controller()
+        /**
+         * Construtor recebe como parâmetros as dependências instanciadas
+         */
+        public Controller(IModel imodel, IView iview)
         {
             view = new View(); 
             model = new Model();
