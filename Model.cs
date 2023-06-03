@@ -80,10 +80,9 @@ namespace AnaliseImagens
         }
 
         /*
-         * Executa comando introduzido pelo utilizador. 
          * Se comando for executado com sucesso, o evento 'OnResultsAvailable' é lançado. Um método da View subscreve a este método
-         * Se o comando não for executado com sucesso, é lançada uma excepção e o controlo retorna ao Controller que irá lidar com essa
-         * excepção
+         * Se o comando não for executado com sucesso, é lançada uma excepção e o 
+         * controlo retorna ao Controller que irá lidar com essa excepção
          */
         public void ExecutarComando(string command, string[] args)
         {
@@ -122,7 +121,7 @@ namespace AnaliseImagens
 
             // Console.WriteLine("Imagem com "+totalPixels+ " Pixels");
 
-            // Cria um filtro de cores vermelhas
+            //Cria um filtro de cores vermelhas
             ColorFiltering filterRed = new()
             {
                 Red = new IntRange(100, 255),

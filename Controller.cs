@@ -35,8 +35,7 @@
         }
 
         /*
-         *   Se comando for o comando de saída, View imprime mensagem de despedida e programa termina
-         *   Caso contrário, Model executa comando. 
+         *   *Model executa comando. 
          *   Podem ocorrer excepções que são geridas pelo método 'HandleException()' do Controller. Caso não ocorram excepções,
          *   a view apresenta os resultados. 
         */
