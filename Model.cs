@@ -5,68 +5,120 @@ using System.Drawing;
 
 namespace AnaliseImagens
 {
-    //Definição da classe ColorPercentages
+    // Delegados dos eventos
+    public delegate void AnalysisResultsHandler(object sender, ResultsEventArgs<ICommandResult> e);
+    public delegate void CommandValidator(string[] args);
+    public delegate ICommandResult<T> CommandExecutor<T>(string[] args);
+
+    /**
+     * Usado para retornar resultados de um comando para a View
+     */
+    public interface ICommandResult {}
+    public interface ICommandResult<TValue> : ICommandResult
+    {
+        TValue Value { get; }
+    }
+
+    /**
+     * O evento OnResultsAvailable pode ser respondido por delegados do tipo AnalysisResultsHandler,
+     * ou seja, pode ser respondido por qualquer método que tenha a mesma assignatura que o delegado definido. 
+     * Quando o evento OnResultsAvailable é lançado, delegados que tenham subscrito a esse evento
+     * vão receber e terão acesso aos resultados.
+     */
+    interface IResultsDelegate
+    {
+        public event AnalysisResultsHandler? OnResultsAvailable;
+    }
+
+    /**
+     * Um contentor de comandos que sabe listar, validar e executar um comando
+     */
+    interface IModel : IResultsDelegate
+    {
+        public void ListarComandos(ref List<string> commands);
+        public void ValidarComando(string command, string[] args);
+        public void ExecutarComando(string command, string[] args);
+    }
+
+    /**
+     * Implementação do resultado de um comando
+     */
+    class CommandResult<TValue> : ICommandResult<TValue>
+    {
+        private readonly TValue value;
+        public TValue Value => value;
+
+        public CommandResult(TValue input)
+        {
+            value = input;
+        }
+    }
+
+    /**
+     * Resultado usado no comando analyze
+     */
     public class ColorPercentages
     {
         public float RedPercentage { get; set; }
         public float GreenPercentage { get; set; }
         public float BluePercentage { get; set; }
     }
-   
-    class Model
-    {
-        //Atributos da classe
-        private readonly List<string> listCmds;
-        public delegate void CommandValidator(string[] args);
-        public delegate ColorPercentages CommandExecutor(string[] args);
-        private readonly Dictionary<string, CommandValidator> commandValidators; 
-        private readonly Dictionary<string, CommandExecutor> commandExecutors;
 
-        /*
-         * O evento OnResultsAvailable pode ser respondido por delegados do tipo AnalysisResultsHandler, ou seja, pode ser 
-         * respondido por qualquer método que tenha a mesma assignatura que o delegado definido. 
-         * Quando o evento OnResultsAvailable é lançado, delegados que tenham subscrito a esse evento vão receber e terão acesso
-         * aos resultados
-         */
-        public delegate void AnalysisResultsHandler(object sender, ResultsEventArgs<ColorPercentages> e);
+    /**
+     * A implementação concreta do IModel
+     */
+    class Model : IModel
+    {
+        // Lista de comandos da classe
+        private readonly List<string> listCmds;
+        private readonly Dictionary<string, CommandValidator> commandValidators;
+        private readonly Dictionary<string, Delegate> commandExecutors;
+
+        // Evento lançado quando um resultado de um comando está disponível
         public event AnalysisResultsHandler? OnResultsAvailable;
 
-        //Construtor
+        /**
+         * Construtor instancia os atributos
+         */
         public Model()
         {
             listCmds = new List<string> { "analyze" };
 
-            //Os dicionários são inicializados associando a cada comando uma função que irá validar ou executar o comando
+            // Os dicionários são inicializados associando a cada comando
+            // uma função que irá validar ou executar o comando
             commandValidators = new Dictionary<string, CommandValidator>
             {
                 { "analyze", ValidateAnalyzeCmd }
             };
 
-            commandExecutors = new Dictionary<string, CommandExecutor>
+            commandExecutors = new Dictionary<string, Delegate>
             {
                 { "analyze", ExecuteAnalyzeCmd }
             };
         }
 
 
-        /*
+        /**
          * Implementação do método que lança o evento 'OnResultsAvailable'
-        */
-        protected virtual void RaiseResultsAvailable(ColorPercentages results)
+         */
+        protected virtual void RaiseResultsAvailable(string command, ICommandResult results)
         {
-            OnResultsAvailable?.Invoke(this, new ResultsEventArgs<ColorPercentages>(results));
+            OnResultsAvailable?.Invoke(this, new ResultsEventArgs<ICommandResult>(command, results));
         }
 
 
-        /*
+        /**
          * Retorna a lista de comandos disponíveis  
-        */
+         */
         public void ListarComandos(ref List<string> commands) 
         {
             commands = listCmds;
         }
 
-
+        /**
+         * Invoca o validador do comando.
+         * Exceciona se o comando não for válido, voltando o controlo para o Controller.
+         */
         public void ValidarComando(string command, string[] args)
         {
             if (commandValidators.TryGetValue(command, out CommandValidator? validator))
@@ -79,18 +131,27 @@ namespace AnaliseImagens
             }
         }
 
-        /*
-         * Se comando for executado com sucesso, o evento 'OnResultsAvailable' é lançado. Um método da View subscreve a este método
-         * Se o comando não for executado com sucesso, é lançada uma excepção e o 
-         * controlo retorna ao Controller que irá lidar com essa excepção
+        /**
+         * Executa comando introduzido pelo utilizador. 
+         * Se comando for executado com sucesso, o evento 'OnResultsAvailable' é lançado.
+         *
+         * Um método da View subscreve este método.
+         *
+         * Se o comando não for executado com sucesso, é lançada uma excepção e o controlo
+         * retorna ao Controller que irá lidar com essa excepção
          */
         public void ExecutarComando(string command, string[] args)
         {
-            if (commandExecutors.TryGetValue(command, out CommandExecutor? executor))
+            if (commandExecutors.TryGetValue(command, out Delegate? executor))
             {
-                //Quando os resultados estão prontos, é lançado o evento
-                ColorPercentages results = executor(args);
-                RaiseResultsAvailable(results);
+                // Usa retorno dinâmico que é avaliado em runtime
+                // Isto é necessário para que se possa manter vários
+                // comandos que retornam resultados diferentes.
+                var genericExecutor = (dynamic)executor;
+                dynamic results = genericExecutor(args);
+
+                // Quando os resultados estão prontos, é lançado o evento
+                RaiseResultsAvailable(command, results);
             }
             else
             {
@@ -98,6 +159,11 @@ namespace AnaliseImagens
             }
         }
 
+        /**
+         * Valida o comando analyze.
+         * Caso não haja argumentos ou o ficheiro providênciado
+         * não exista, então lança exceção.
+         */
         private void ValidateAnalyzeCmd (string[] args)
         {
             if (args.Length == 0) {
@@ -111,17 +177,16 @@ namespace AnaliseImagens
 
 
         /**
-        * Função que calcula as percentagens de cada cor e retornar resultado como objecto do tipo ColorPercentages
-        */
-        private ColorPercentages ExecuteAnalyzeCmd(string[] args)
+         * Função que calcula as percentagens de cada cor e retornar
+         * resultado como objecto do tipo ColorPercentages
+         */
+        private ICommandResult<ColorPercentages> ExecuteAnalyzeCmd(string[] args)
         {
             Bitmap bitmap = new(args[0]);
 
             float totalPixels = bitmap.Height * bitmap.Width;
 
-            // Console.WriteLine("Imagem com "+totalPixels+ " Pixels");
-
-            //Cria um filtro de cores vermelhas
+            // Cria um filtro de cores vermelhas
             ColorFiltering filterRed = new()
             {
                 Red = new IntRange(100, 255),
@@ -165,18 +230,14 @@ namespace AnaliseImagens
             float greenPixels = bitmapGreenPixeis.PixelsCountWithoutBlack;
             float bluePixels = bitmapBluePixeis.PixelsCountWithoutBlack;
 
-            // Console.WriteLine("Imagem com " + redPixels + " REDPixels");
-            // Console.WriteLine("Imagem com " + greenPixels + " GREENPixels");
-            // Console.WriteLine("Imagem com " + bluePixels + " BLUEPixels");
-
             ColorPercentages results = new()
             {
-                RedPercentage = (redPixels/totalPixels)*100,
-                GreenPercentage = (greenPixels/totalPixels)*100,
-                BluePercentage = (bluePixels/totalPixels)*100,
+                RedPercentage = (redPixels / totalPixels) * 100,
+                GreenPercentage = (greenPixels / totalPixels) * 100,
+                BluePercentage = (bluePixels / totalPixels) * 100,
             };
 
-            return results;
+            return new CommandResult<ColorPercentages>(results);
         }
     }
 }
